@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  db:
+    build:
+      context: ./postgresql
+      dockerfile: Dockerfile
+    env_file:
+      - ./env/.postgresql.env
+    container_name: postgres_container
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  etl:
+    build:
+      context: ./python
+      dockerfile: Dockerfile
+    env_file:
+      - ./env/.python.env
+    container_name: etl_container
+    depends_on:
+      - db
+    volumes:
+      - ./data:/app/data
+
+volumes:
+  pgdata:
