@@ -38,18 +38,16 @@ def visualize_data(engine, output_dir="data"):
     query = "SELECT * FROM ships"
     df = pd.read_sql(query, engine)
 
-    # Bar Chart for Top Companies by Number of Ships
-    top_companies = df['Company_Name'].value_counts().nlargest(10)
-    plt.figure(figsize=(12, 8))
-    top_companies.plot(kind='bar', color='skyblue')
-    plt.title('Top 10 Companies by Number of Ships', fontsize=16)
-    plt.xlabel('Company', fontsize=14)
-    plt.ylabel('Number of Ships', fontsize=14)
-    plt.xticks(rotation=45, ha='right', fontsize=12)
+    # Pie Chart for Ship Type Distribution
+    ship_types = df['Ship_Name'].value_counts()
+    plt.figure(figsize=(10, 10))
+    ship_types.plot(kind='pie', autopct='%1.1f%%', startangle=140, cmap='tab20')
+    plt.title('Distribution of Ship Types', fontsize=16)
+    plt.ylabel('')  # Hide y-label for a cleaner look
+    output_path_pie = os.path.join(output_dir, "ship_type_pie.png")
     plt.tight_layout()
-    output_path_bar = os.path.join(output_dir, "ship_company_bar.png")
-    plt.savefig(output_path_bar)
-    print(f"Bar chart saved to {output_path_bar}")
+    plt.savefig(output_path_pie)
+    print(f"Pie chart saved to {output_path_pie}")
     plt.close()
 
     # Histogram for Ship Age Distribution
@@ -78,7 +76,7 @@ def visualize_data(engine, output_dir="data"):
 
     # Box Plot for Ship Size (Length and Width)
     plt.figure(figsize=(12, 8))
-    df[['Length', 'Width']].plot(kind='box')
+    df[['Length', 'Width']].plot(kind='box', color=dict(boxes='DarkGreen', whiskers='DarkOrange', medians='DarkBlue', caps='Gray'))
     plt.title('Distribution of Ship Sizes', fontsize=16)
     plt.ylabel('Size (meters)', fontsize=14)
     plt.tight_layout()
@@ -100,16 +98,17 @@ def visualize_data(engine, output_dir="data"):
     print(f"Line chart saved to {output_path_line}")
     plt.close()
 
-    # Bar Chart for Top 10 Largest Ships by Length
+    # Bar Chart for Top 10 Longest Ships with Company Name
     top_ships_length = df.nlargest(10, 'Length')
     plt.figure(figsize=(12, 8))
-    plt.bar(top_ships_length['Ship_Name'], top_ships_length['Length'], color='teal')
-    plt.title('Top 10 Largest Ships by Length', fontsize=16)
-    plt.xlabel('Ship Name', fontsize=14)
+    labels = top_ships_length.apply(lambda row: f"{row['Ship_Name']} ({row['Company_Name']})", axis=1)
+    plt.bar(labels, top_ships_length['Length'], color=[cm.get_cmap('tab10')(i) for i in range(10)])
+    plt.title('Top 10 Longest Ships by Length', fontsize=16)
+    plt.xlabel('Ship Name (Company)', fontsize=14)
     plt.ylabel('Length (meters)', fontsize=14)
     plt.xticks(rotation=45, ha='right', fontsize=12)
     plt.tight_layout()
-    output_path_length = os.path.join(output_dir, "largest_ships_length.png")
+    output_path_length = os.path.join(output_dir, "longest_ships_length.png")
     plt.savefig(output_path_length)
     print(f"Bar chart saved to {output_path_length}")
     plt.close()
