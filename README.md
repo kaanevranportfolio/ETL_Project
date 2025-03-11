@@ -49,3 +49,7 @@ The project generates several visualizations, including:
    ```bash
    git clone https://github.com/yourusername/ETL_Project.git
    cd ETL_Project
+
+### Key Points
+
+- **`docker-compose up --build`:** Builds and starts the containers, ensuring any changes are applied.
