@@ -53,3 +53,4 @@ The project generates several visualizations, including:
 ### Key Points
 
 - **`docker-compose up --build`:** Builds and starts the containers, ensuring any changes are applied.
+- The Analysis results are populated in data directory which is on host machine in the same directory wiyh yaml file. (pgdata needs root access to view the files because it is a database)
